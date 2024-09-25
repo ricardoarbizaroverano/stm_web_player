@@ -7,6 +7,7 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); /* Similar to CAMPUS PERSONAL USE */
         @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap'); /* Stencil-style font */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap'); /* Typewriter-style font */
 
         body {
             font-family: 'Staatliches', sans-serif;
@@ -28,14 +29,19 @@
         }
         h2 {
             font-family: 'Staatliches', sans-serif;
-            font-size: 1.5em;
+            font-size: 1.2em; /* Reduced by 3 pixels */
             margin-top: 0;
             color: #000000;
             text-shadow: 1px 1px 3px #ffffff;
         }
-        .credits {
+        .legend {
             font-family: 'Staatliches', sans-serif;
-            font-size: 1.2em; /* Increased by 3 pixels */
+            font-size: 1em;
+            color: grey;
+        }
+        .credits {
+            font-family: 'VT323', monospace; /* Typewriter-style font */
+            font-size: 1em; /* Reduced by 2 pixels */
             margin-top: 15px;
             color: #ffffff; /* Changed to white */
             text-shadow: 1px 1px 2px #000000;
@@ -72,49 +78,75 @@
             border-bottom: 15px solid transparent;
             margin-left: 5px;
         }
+        .play-button.pause::before {
+            content: '';
+            width: 18px;
+            height: 25px;
+            background-color: #ffffff;
+            border-radius: 2px;
+            margin-left: 0;
+            position: relative;
+        }
+        .play-button.pause::before {
+            content: '';
+            width: 5px;
+            height: 25px;
+            background-color: #ffffff;
+            position: absolute;
+            left: 33%;
+        }
+        .play-button.pause::after {
+            content: '';
+            width: 5px;
+            height: 25px;
+            background-color: #ffffff;
+            position: absolute;
+            right: 33%;
+        }
         .volume-control {
             margin-top: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .knob {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #555 40%, #333 60%);
-            border: 6px solid #777;
-            border-radius: 50%;
-            position: relative;
+        .volume-slider {
+            -webkit-appearance: none;
+            width: 200px;
+            height: 12px;
+            background: #222;
+            border: 1px solid #777;
+            border-radius: 5px;
+            box-shadow: inset 2px 2px 5px #111;
+            outline: none;
             cursor: pointer;
-            box-shadow: inset 2px 2px 5px #111, 2px 2px 5px #000;
         }
-        .knob::before {
-            content: '';
-            width: 8px;
-            height: 30px;
-            background: #ccc;
-            border-radius: 4px;
-            position: absolute;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #555;
+            border-radius: 50%;
+            border: 3px solid #777;
+            box-shadow: inset 2px 2px 5px #111;
+            cursor: pointer;
         }
-        .knob-label {
-            font-family: 'Staatliches', sans-serif;
-            color: #000000;
-            font-size: 1em;
-            margin-top: 10px;
-        }
-        .knob-label span {
-            font-weight: bold;
+        .volume-slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #555;
+            border-radius: 50%;
+            border: 3px solid #777;
+            box-shadow: inset 2px 2px 5px #111;
+            cursor: pointer;
         }
         .footer {
             position: fixed;
             bottom: 10px;
             width: 100%;
             text-align: center;
-            font-family: 'Staatliches', sans-serif;
-            font-size: 1.2em; /* Increased by 3 pixels */
+            font-family: 'VT323', monospace; /* Typewriter-style font */
+            font-size: 1em; /* Reduced by 2 pixels */
             color: #ffffff; /* Changed to white */
             text-shadow: 1px 1px 2px #000000;
         }
@@ -127,14 +159,12 @@
 <body>
     <h1>BITÁCORA SÓNICA</h1>
     <h2>-Máquina Sonora del Tiempo-<br>www.maquinasonoradeltiempo.com</h2>
+    <div class="legend" id="legend"></div>
 
     <div class="player-container">
         <div class="play-button" id="play-button"></div>
         <div class="volume-control">
-            <div class="knob" id="volume-knob"></div>
-        </div>
-        <div class="knob-label">
-            Volume: <span id="volume-label">50%</span>
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
         </div>
     </div>
 
@@ -152,10 +182,13 @@
         const urlParams = new URLSearchParams(window.location.search);
         const file = urlParams.get('file');
 
+        // Extract the file number from the filename
+        const fileNumber = file ? file.match(/\d+/)[0] : '1';
+
         // GitHub URL using githack as a proxy for correct content-type headers
         const githubBaseUrl = 'https://raw.githack.com/ricardoarbizaroverano/stm_web_interface/main/stm_users_mix/';
 
-        // Check if the file exists and set the audio source
+        // Create a new audio element
         const audio = new Audio();
 
         if (file) {
@@ -176,6 +209,9 @@
         audio.volume = 0.5;
         audio.loop = true; // Loop playback
 
+        // Update the legend with the keychain number
+        document.getElementById('legend').textContent = `Llavero #${fileNumber}`;
+
         // Play button functionality
         const playButton = document.getElementById('play-button');
         let isPlaying = false;
@@ -183,47 +219,24 @@
         playButton.addEventListener('click', () => {
             if (isPlaying) {
                 audio.pause();
+                playButton.classList.remove('pause');
                 playButton.style.background = 'radial-gradient(circle, #444 40%, #222 60%)';
             } else {
                 audio.play();
+                playButton.classList.add('pause');
                 playButton.style.background = 'radial-gradient(circle, #222 40%, #444 60%)';
             }
             isPlaying = !isPlaying;
         });
 
-        // Volume knob control logic
-        const volumeKnob = document.getElementById('volume-knob');
-        const volumeLabel = document.getElementById('volume-label');
-        
-        let volume = 0.5;
-
-        function setKnobRotation(volume) {
-            const rotation = volume * 270 - 135;
-            volumeKnob.style.transform = `rotate(${rotation}deg)`;
-        }
-
-        // Initialize knob position
-        setKnobRotation(volume);
-
-        // Click and drag to change volume
-        volumeKnob.addEventListener('mousedown', function(event) {
-            function onMouseMove(e) {
-                const rect = volumeKnob.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                const deltaX = e.clientX - centerX;
-                const deltaY = e.clientY - centerY;
-                const angle = Math.atan2(deltaY, deltaX);
-                volume = Math.min(Math.max((angle + Math.PI) / (2 * Math.PI), 0), 1);
-                audio.volume = volume;
-                setKnobRotation(volume);
-                volumeLabel.textContent = `${Math.round(volume * 100)}%`;
-            }
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', function() {
-                document.removeEventListener('mousemove', onMouseMove);
-            }, { once: true });
+        // Volume slider control logic
+        const volumeSlider = document.getElementById('volume-slider');
+        volumeSlider.addEventListener('input', function() {
+            audio.volume = this.value;
         });
+
+        // Initialize slider position
+        volumeSlider.value = audio.volume;
     </script>
 </body>
 </html>
