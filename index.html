@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitácora Sónica de la Máquina Sonora del Tiempo</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); /* Similar to CAMPUS PERSONAL USE */
-        @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap'); /* Stencil-style font */
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap'); /* Typewriter-style font */
+        @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
 
         body {
             font-family: 'Staatliches', sans-serif;
@@ -29,22 +29,22 @@
         }
         h2 {
             font-family: 'Staatliches', sans-serif;
-            font-size: 1.2em; /* Reduced by 3 pixels */
+            font-size: 1.2em;
             margin-top: 0;
             color: #000000;
             text-shadow: 1px 1px 3px #ffffff;
         }
         .legend {
             font-family: 'Staatliches', sans-serif;
-            font-size: 1.5em; /* Increased by 10 pixels */
-            color: #ffffff; /* Changed to white */
+            font-size: 1.5em;
+            color: #ffffff;
             margin-top: 10px;
         }
         .credits {
-            font-family: 'Staatliches', sans-serif; /* Changed font style */
-            font-size: 1.2em; /* Keep current size */
+            font-family: 'Staatliches', sans-serif;
+            font-size: 1.2em;
             margin-top: 15px;
-            color: #ffffff; /* Changed to white */
+            color: #ffffff;
             text-shadow: 1px 1px 2px #000000;
         }
         .player-container {
@@ -104,52 +104,20 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 150px; /* Adjust height for vertical slider */
-        }
-        .volume-slider {
-            -webkit-appearance: none;
-            width: 12px; /* Adjust width for vertical slider */
-            height: 100%;
-            background: #222;
-            border: 1px solid #777;
-            border-radius: 5px;
-            box-shadow: inset 2px 2px 5px #111;
-            outline: none;
-            cursor: pointer;
-            writing-mode: bt-lr; /* Rotate the slider for vertical alignment */
-        }
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            background: #555;
-            border-radius: 50%;
-            border: 3px solid #777;
-            box-shadow: inset 2px 2px 5px #111;
-            cursor: pointer;
-        }
-        .volume-slider::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            background: #555;
-            border-radius: 50%;
-            border: 3px solid #777;
-            box-shadow: inset 2px 2px 5px #111;
-            cursor: pointer;
+            height: 300px; /* Adjust height for SVG knob */
         }
         .footer {
             position: fixed;
             bottom: 10px;
             width: 100%;
             text-align: center;
-            font-family: 'VT323', monospace; /* Typewriter-style font */
-            font-size: 1em; /* Reduced by 2 pixels */
-            color: #ffffff; /* Changed to white */
+            font-family: 'VT323', monospace;
+            font-size: 1em;
+            color: #ffffff;
             text-shadow: 1px 1px 2px #000000;
         }
         .footer a {
-            color: #ffffff; /* Changed to white */
+            color: #ffffff;
             text-decoration: none;
         }
     </style>
@@ -162,7 +130,54 @@
     <div class="player-container">
         <div class="play-button" id="play-button"></div>
         <div class="volume-control">
-            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
+            <!-- Ocultamos el slider de volumen antiguo -->
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.5" style="display: none;">
+            <!-- SVG del knob -->
+            <svg id="mainSVG" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+                <defs>
+                    <radialGradient id="robotMaskGrad" cx="400" cy="300" fx="400" fy="277.61" r="130.72" gradientUnits="userSpaceOnUse">
+                        <stop offset=".88" stop-color="#f0f0f0"/>
+                        <stop offset=".99" stop-color="#000"/>
+                    </radialGradient>
+                    <circle class="dialTooth" cx="277" cy="419" r="4" fill="var(--ui-grey)" />
+                    <filter id="dropShadow" x="-100%" y="-100%" width="250%" height="250%">
+                        <feGaussianBlur stdDeviation="12 16" result="coloredBlur" />
+                        <feOffset dx="0" dy="20" result="offsetblur"></feOffset>
+                        <feFlood id="glowAlpha" flood-color="var(--ui-shadow)" flood-opacity="0.18"></feFlood>
+                        <feComposite in2="offsetblur" operator="in"></feComposite>
+                        <feMerge>
+                            <feMergeNode />
+                            <feMergeNode in="SourceGraphic"></feMergeNode>
+                        </feMerge>
+                    </filter>
+                    <radialGradient id="dialBody" cx="400" cy="316" fx="400" fy="316" r="145.43" gradientUnits="userSpaceOnUse">
+                        <stop offset=".78" stop-color="#f1f1f1" />
+                        <stop offset="0.95" stop-color="#fff" />
+                    </radialGradient>
+                    <radialGradient id="dialBody-2" cx="400" cy="279" fx="400" fy="279" r="145.43" gradientUnits="userSpaceOnUse">
+                        <stop offset=".78" stop-color="#f0f0f0" stop-opacity="0" />
+                        <stop offset=".96" stop-color="#e5e5e5" />
+                    </radialGradient>
+                    <filter id='innerShadow'>
+                        <feOffset dx='0' dy='1' />
+                        <feGaussianBlur stdDeviation='1' result='offset-blur' />
+                        <feComposite operator='out' in='SourceGraphic' in2='offset-blur' result='inverse' />
+                        <feFlood flood-color='black' flood-opacity='0.15' result='color' />
+                        <feComposite operator='in' in='color' in2='inverse' result='shadow' />
+                        <feComposite operator='over' in='shadow' in2='SourceGraphic' />
+                    </filter>
+                </defs>
+                <g filter="url(#dropShadow)">
+                    <g id="dialBodyGroup">
+                        <circle id="dialBodyShine" cx="400" cy="300" r="130.76" fill="url(#dialBody)" />
+                        <circle id="dialBodyShade" cx="400" cy="300" r="130.76" fill="url(#dialBody-2)" />
+                        <g filter="url(#innerShadow)">
+                            <circle id="dialMarker" cx="0" cy="0" r="8" fill="var(--ui-green)" />
+                        </g>
+                    </g>
+                </g>
+                <g filter="url(#innerShadow)" id="dialToothContainer"></g>
+            </svg>
         </div>
         <audio id="audio-player" controls style="display: none;">
             <source id="audio-source" src="" type="audio/mpeg">
@@ -179,15 +194,17 @@
         Diseño, Creación e Idea: &copy; Ricardo Arbiza, 2024 | <a href="https://ricardoarbiza.com">ricardoarbiza.com</a>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/Draggable.min.js"></script>
     <script>
-        // Get the audio file name from the URL parameters
+        // Obtener el nombre del archivo de audio desde los parámetros de la URL
         const urlParams = new URLSearchParams(window.location.search);
         const file = urlParams.get('file');
 
-        // Extract the file number from the filename
+        // Obtener el número del archivo
         const fileNumber = file ? file.match(/\d+/)[0] : '1';
 
-        // Set the audio source dynamically
+        // Establecer la fuente de audio dinámicamente
         if (file) {
             const audioUrl = `https://github.com/ricardoarbizaroverano/stm_web_interface/raw/main/stm_users_mix/${file}`;
             document.getElementById('audio-source').src = audioUrl;
@@ -197,7 +214,7 @@
             document.getElementById('legend').textContent = 'No audio file specified.';
         }
 
-        // Audio element and play button functionality
+        // Elementos del audio y funcionalidad del botón de reproducción
         const audio = document.getElementById('audio-player');
         const playButton = document.getElementById('play-button');
         let isPlaying = false;
@@ -215,7 +232,7 @@
             isPlaying = !isPlaying;
         });
 
-        // Listen for the play and pause events on the audio element
+        // Escuchar los eventos de play y pause en el elemento de audio
         audio.addEventListener('play', () => {
             isPlaying = true;
             playButton.classList.add('pause');
@@ -228,14 +245,39 @@
             playButton.style.background = 'radial-gradient(circle, #444 40%, #222 60%)';
         });
 
-        // Volume slider control logic
-        const volumeSlider = document.getElementById('volume-slider');
-        volumeSlider.addEventListener('input', function () {
-            audio.volume = this.value;
+        // Lógica de control del knob de volumen
+        let select = s => document.querySelector(s),
+            dialMarker = select('#dialMarker'),
+            maxRotation = 270,
+            volumeRange = [0, 1],
+            volumeStep = maxRotation / (volumeRange[1] - volumeRange[0]),
+            volume;
+
+        // Actualizar el volumen según la rotación del knob
+        function updateVolume() {
+            let rotation = gsap.getProperty(dialMarker, 'rotation');
+            volume = gsap.utils.mapRange(0, maxRotation, volumeRange[0], volumeRange[1], rotation);
+            audio.volume = volume;
+        }
+
+        // Crear el dragger para el knob
+        Draggable.create(dialMarker, {
+            type: 'rotation',
+            trigger: '#dialBodyGroup',
+            bounds: {minRotation: 0, maxRotation: maxRotation},
+            onDrag: updateVolume,
+            onThrowUpdate: updateVolume,
+            inertia: true,
+            dragResistance: 0.23,
+            overshootTolerance: 0.3,
+            throwResistance: 3000
         });
 
-        // Initialize slider position
-        volumeSlider.value = audio.volume;
+        // Inicializar el valor del knob según el volumen actual
+        gsap.set(dialMarker, {
+            rotation: volumeStep * audio.volume,
+            svgOrigin: '400 300'
+        });
     </script>
 </body>
 </html>
