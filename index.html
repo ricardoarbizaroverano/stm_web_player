@@ -69,6 +69,7 @@
             margin: 20px auto;
             box-shadow: inset 2px 2px 5px #111, 2px 2px 5px #000;
             position: relative;
+            transition: background 0.3s;
         }
         .play-button::before {
             content: '';
@@ -80,19 +81,22 @@
             border-bottom: 15px solid transparent;
             margin-left: 5px;
         }
-        .play-button.pause::before,
+        .play-button.pause::before {
+            content: '';
+            width: 10px;
+            height: 40px;
+            background-color: #ffffff;
+            margin-left: 0;
+            border: none;
+            position: relative;
+            display: flex;
+        }
         .play-button.pause::after {
             content: '';
-            width: 8px;
+            width: 10px;
             height: 40px;
             background-color: #ffffff;
             position: absolute;
-            top: 20px;
-        }
-        .play-button.pause::before {
-            left: 30px;
-        }
-        .play-button.pause::after {
             right: 30px;
         }
         .volume-control {
@@ -100,7 +104,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 120px; /* Adjust height for vertical slider */
+            height: 150px; /* Adjust height for vertical slider */
         }
         .volume-slider {
             -webkit-appearance: none;
@@ -160,6 +164,10 @@
         <div class="volume-control">
             <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
         </div>
+        <audio id="audio-player" controls style="display: none;">
+            <source id="audio-source" src="" type="audio/mpeg">
+            Your browser does not support the audio element.
+        </audio>
     </div>
 
     <div class="credits">
@@ -179,34 +187,18 @@
         // Extract the file number from the filename
         const fileNumber = file ? file.match(/\d+/)[0] : '1';
 
-        // GitHub URL using githack as a proxy for correct content-type headers
-        const githubBaseUrl = 'https://raw.githack.com/ricardoarbizaroverano/stm_web_interface/main/stm_users_mix/';
-
-        // Create a new audio element
-        const audio = new Audio();
-
+        // Set the audio source dynamically
         if (file) {
-            // Set the audio source using the provided file
-            audio.src = `${githubBaseUrl}${file}`;
+            const audioUrl = `https://github.com/ricardoarbizaroverano/stm_web_interface/raw/main/stm_users_mix/${file}`;
+            document.getElementById('audio-source').src = audioUrl;
+            document.getElementById('audio-player').load();
+            document.getElementById('legend').textContent = `Llavero #${fileNumber}`;
         } else {
-            // If no file is provided, set a default file
-            audio.src = `${githubBaseUrl}stm_mix_1.mp3`;
+            document.getElementById('legend').textContent = 'No audio file specified.';
         }
 
-        // Handle errors in case the file can't be loaded
-        audio.addEventListener('error', function() {
-            console.error(`Error loading the audio file: ${audio.src}`);
-            alert('The audio file could not be loaded. Please check the URL.');
-        });
-
-        // Set initial volume and loop
-        audio.volume = 0.5;
-        audio.loop = true; // Loop playback
-
-        // Update the legend with the keychain number
-        document.getElementById('legend').textContent = `Llavero #${fileNumber}`;
-
-        // Play button functionality
+        // Audio element and play button functionality
+        const audio = document.getElementById('audio-player');
         const playButton = document.getElementById('play-button');
         let isPlaying = false;
 
@@ -223,9 +215,22 @@
             isPlaying = !isPlaying;
         });
 
+        // Listen for the play and pause events on the audio element
+        audio.addEventListener('play', () => {
+            isPlaying = true;
+            playButton.classList.add('pause');
+            playButton.style.background = 'radial-gradient(circle, #222 40%, #444 60%)';
+        });
+
+        audio.addEventListener('pause', () => {
+            isPlaying = false;
+            playButton.classList.remove('pause');
+            playButton.style.background = 'radial-gradient(circle, #444 40%, #222 60%)';
+        });
+
         // Volume slider control logic
         const volumeSlider = document.getElementById('volume-slider');
-        volumeSlider.addEventListener('input', function() {
+        volumeSlider.addEventListener('input', function () {
             audio.volume = this.value;
         });
 
