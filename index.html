@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bitácora Sónica de la Máquina Sonora del Tiempo</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); /* Similar a CAMPUS PERSONAL USE */
-        @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap'); /* Tipo Stencil */
+        @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); /* Similar to CAMPUS PERSONAL USE */
+        @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap'); /* Stencil-style font */
 
         body {
             font-family: 'Staatliches', sans-serif;
@@ -35,9 +35,9 @@
         }
         .credits {
             font-family: 'Staatliches', sans-serif;
-            font-size: 1.2em; /* Aumentado en 3 píxeles */
+            font-size: 1.2em; /* Increased by 3 pixels */
             margin-top: 15px;
-            color: #ffffff; /* Color cambiado a blanco */
+            color: #ffffff; /* Changed to white */
             text-shadow: 1px 1px 2px #000000;
         }
         .player-container {
@@ -114,12 +114,12 @@
             width: 100%;
             text-align: center;
             font-family: 'Staatliches', sans-serif;
-            font-size: 1.2em; /* Aumentado en 3 píxeles */
-            color: #ffffff; /* Color cambiado a blanco */
+            font-size: 1.2em; /* Increased by 3 pixels */
+            color: #ffffff; /* Changed to white */
             text-shadow: 1px 1px 2px #000000;
         }
         .footer a {
-            color: #ffffff; /* Color cambiado a blanco */
+            color: #ffffff; /* Changed to white */
             text-decoration: none;
         }
     </style>
@@ -148,27 +148,33 @@
     </div>
 
     <script>
-        // Obtener el nombre del archivo de audio de los parámetros de la URL
+        // Get the audio file name from the URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const file = urlParams.get('file');
 
-        // URL base de GitHub para los archivos de audio
-        const githubBaseUrl = 'https://github.com/ricardoarbizaroverano/stm_web_interface/raw/main/stm_users_mix/';
+        // GitHub URL using githack as a proxy for correct content-type headers
+        const githubBaseUrl = 'https://raw.githack.com/ricardoarbizaroverano/stm_web_interface/main/stm_users_mix/';
 
-        // Crear un nuevo elemento de audio
+        // Create a new audio element
         const audio = new Audio();
-        
+
         if (file) {
-            // Establecer la fuente del audio usando el archivo proporcionado
+            // Set the audio source using the provided file
             audio.src = `${githubBaseUrl}${file}`;
         } else {
-            // Si no se proporciona ningún archivo, establecer un archivo predeterminado
+            // If no file is provided, set a default file
             audio.src = `${githubBaseUrl}stm_mix_1.mp3`;
         }
 
-        // Configurar volumen inicial y bucle
+        // Handle errors in case the file can't be loaded
+        audio.addEventListener('error', function() {
+            console.error(`Error loading the audio file: ${audio.src}`);
+            alert('The audio file could not be loaded. Please check the URL.');
+        });
+
+        // Set initial volume and loop
         audio.volume = 0.5;
-        audio.loop = true; // Reproducción en loop
+        audio.loop = true; // Loop playback
 
         // Play button functionality
         const playButton = document.getElementById('play-button');
