@@ -36,12 +36,13 @@
         }
         .legend {
             font-family: 'Staatliches', sans-serif;
-            font-size: 1em;
-            color: grey;
+            font-size: 1.5em; /* Increased by 10 pixels */
+            color: #ffffff; /* Changed to white */
+            margin-top: 10px;
         }
         .credits {
-            font-family: 'VT323', monospace; /* Typewriter-style font */
-            font-size: 1em; /* Reduced by 2 pixels */
+            font-family: 'Staatliches', sans-serif; /* Changed font style */
+            font-size: 1.2em; /* Keep current size */
             margin-top: 15px;
             color: #ffffff; /* Changed to white */
             text-shadow: 1px 1px 2px #000000;
@@ -67,6 +68,7 @@
             cursor: pointer;
             margin: 20px auto;
             box-shadow: inset 2px 2px 5px #111, 2px 2px 5px #000;
+            position: relative;
         }
         .play-button::before {
             content: '';
@@ -78,47 +80,39 @@
             border-bottom: 15px solid transparent;
             margin-left: 5px;
         }
-        .play-button.pause::before {
-            content: '';
-            width: 18px;
-            height: 25px;
-            background-color: #ffffff;
-            border-radius: 2px;
-            margin-left: 0;
-            position: relative;
-        }
-        .play-button.pause::before {
-            content: '';
-            width: 5px;
-            height: 25px;
-            background-color: #ffffff;
-            position: absolute;
-            left: 33%;
-        }
+        .play-button.pause::before,
         .play-button.pause::after {
             content: '';
-            width: 5px;
-            height: 25px;
+            width: 8px;
+            height: 40px;
             background-color: #ffffff;
             position: absolute;
-            right: 33%;
+            top: 20px;
+        }
+        .play-button.pause::before {
+            left: 30px;
+        }
+        .play-button.pause::after {
+            right: 30px;
         }
         .volume-control {
             margin-top: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
+            height: 120px; /* Adjust height for vertical slider */
         }
         .volume-slider {
             -webkit-appearance: none;
-            width: 200px;
-            height: 12px;
+            width: 12px; /* Adjust width for vertical slider */
+            height: 100%;
             background: #222;
             border: 1px solid #777;
             border-radius: 5px;
             box-shadow: inset 2px 2px 5px #111;
             outline: none;
             cursor: pointer;
+            writing-mode: bt-lr; /* Rotate the slider for vertical alignment */
         }
         .volume-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
