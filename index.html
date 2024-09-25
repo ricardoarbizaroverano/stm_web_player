@@ -148,9 +148,25 @@
     </div>
 
     <script>
-        // Audio element initialization
+        // Obtener el nombre del archivo de audio de los parámetros de la URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const file = urlParams.get('file');
+
+        // URL base de GitHub para los archivos de audio
+        const githubBaseUrl = 'https://github.com/ricardoarbizaroverano/stm_web_interface/raw/main/stm_users_mix/';
+
+        // Crear un nuevo elemento de audio
         const audio = new Audio();
-        audio.src = "https://github.com/ricardoarbizaroverano/stm_web_interface/raw/main/stm_users_mix/audio.mp3"; // Reemplaza con tu archivo predeterminado
+        
+        if (file) {
+            // Establecer la fuente del audio usando el archivo proporcionado
+            audio.src = `${githubBaseUrl}${file}`;
+        } else {
+            // Si no se proporciona ningún archivo, establecer un archivo predeterminado
+            audio.src = `${githubBaseUrl}stm_mix_1.mp3`;
+        }
+
+        // Configurar volumen inicial y bucle
         audio.volume = 0.5;
         audio.loop = true; // Reproducción en loop
 
