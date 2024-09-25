@@ -3,40 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Player</title>
+    <title>Bitácora Sónica de la Máquina Sonora del Tiempo</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Righteous&display=swap'); /* Similar a CAMPUS PERSONAL USE */
+        @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap'); /* Tipo Stencil */
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Staatliches', sans-serif;
             text-align: center;
             padding: 20px;
+            background-image: url('https://ambitointernacional.com/wp-content/uploads/2022/10/uru4-1024x644.jpg');
+            background-size: cover;
+            background-attachment: fixed;
+            background-color: #000000;
+            background-blend-mode: luminosity;
+            color: #000000;
         }
-        audio {
-            width: 100%;
+        h1 {
+            font-family: 'Righteous', cursive;
+            font-size: 3em;
+            margin-bottom: 5px;
+            color: #000000;
+            text-shadow: 2px 2px 4px #ffffff;
+        }
+        h2 {
+            font-family: 'Staatliches', sans-serif;
+            font-size: 1.5em;
+            margin-top: 0;
+            color: #000000;
+            text-shadow: 1px 1px 3px #ffffff;
+        }
+        .credits {
+            font-family: 'Staatliches', sans-serif;
+            font-size: 1.2em; /* Aumentado en 3 píxeles */
+            margin-top: 15px;
+            color: #ffffff; /* Color cambiado a blanco */
+            text-shadow: 1px 1px 2px #000000;
+        }
+        .player-container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            display: inline-block;
+            margin-top: 30px;
             max-width: 600px;
+        }
+        .play-button {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #444 40%, #222 60%);
+            border: 6px solid #777;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            margin: 20px auto;
+            box-shadow: inset 2px 2px 5px #111, 2px 2px 5px #000;
+        }
+        .play-button::before {
+            content: '';
+            display: block;
+            width: 0;
+            height: 0;
+            border-left: 25px solid #ffffff;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            margin-left: 5px;
+        }
+        .volume-control {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .knob {
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, #555 40%, #333 60%);
+            border: 6px solid #777;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            box-shadow: inset 2px 2px 5px #111, 2px 2px 5px #000;
+        }
+        .knob::before {
+            content: '';
+            width: 8px;
+            height: 30px;
+            background: #ccc;
+            border-radius: 4px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        .knob-label {
+            font-family: 'Staatliches', sans-serif;
+            color: #000000;
+            font-size: 1em;
+            margin-top: 10px;
+        }
+        .knob-label span {
+            font-weight: bold;
+        }
+        .footer {
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+            text-align: center;
+            font-family: 'Staatliches', sans-serif;
+            font-size: 1.2em; /* Aumentado en 3 píxeles */
+            color: #ffffff; /* Color cambiado a blanco */
+            text-shadow: 1px 1px 2px #000000;
+        }
+        .footer a {
+            color: #ffffff; /* Color cambiado a blanco */
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
-    <h1>Listen to the Audio</h1>
-    <audio controls>
-        <source id="audio-source" src="" type="audio/mpeg">
-        Your browser does not support the audio element.
-    </audio>
-    <p id="audio-info"></p>
+    <h1>BITÁCORA SÓNICA</h1>
+    <h2>-Máquina Sonora del Tiempo-<br>www.maquinasonoradeltiempo.com</h2>
+
+    <div class="player-container">
+        <div class="play-button" id="play-button"></div>
+        <div class="volume-control">
+            <div class="knob" id="volume-knob"></div>
+        </div>
+        <div class="knob-label">
+            Volume: <span id="volume-label">50%</span>
+        </div>
+    </div>
+
+    <div class="credits">
+        Gracias por visitarnos!<br>
+        Museo de la Revolución Industrial, Fray Bentos, Rio Negro
+    </div>
+
+    <div class="footer">
+        Diseño, Creación e Idea: &copy; Ricardo Arbiza, 2024 | <a href="https://ricardoarbiza.com">ricardoarbiza.com</a>
+    </div>
 
     <script>
-        // Get the audio file name from the URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const file = urlParams.get('file');
+        // Audio element initialization
+        const audio = new Audio();
+        audio.src = "https://github.com/ricardoarbizaroverano/stm_web_interface/raw/main/stm_users_mix/audio.mp3"; // Reemplaza con tu archivo predeterminado
+        audio.volume = 0.5;
+        audio.loop = true; // Reproducción en loop
 
-        // Set the audio source dynamically
-        if (file) {
-            const audioUrl = `https://github.com/ricardoarbizaroverano/stm_web_interface/raw/main/stm_users_mix/${file}`;
-            document.getElementById('audio-source').src = audioUrl;
-            document.getElementById('audio-info').textContent = `Playing: ${file}`;
-        } else {
-            document.getElementById('audio-info').textContent = 'No audio file specified.';
+        // Play button functionality
+        const playButton = document.getElementById('play-button');
+        let isPlaying = false;
+
+        playButton.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                playButton.style.background = 'radial-gradient(circle, #444 40%, #222 60%)';
+            } else {
+                audio.play();
+                playButton.style.background = 'radial-gradient(circle, #222 40%, #444 60%)';
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // Volume knob control logic
+        const volumeKnob = document.getElementById('volume-knob');
+        const volumeLabel = document.getElementById('volume-label');
+        
+        let volume = 0.5;
+
+        function setKnobRotation(volume) {
+            const rotation = volume * 270 - 135;
+            volumeKnob.style.transform = `rotate(${rotation}deg)`;
         }
+
+        // Initialize knob position
+        setKnobRotation(volume);
+
+        // Click and drag to change volume
+        volumeKnob.addEventListener('mousedown', function(event) {
+            function onMouseMove(e) {
+                const rect = volumeKnob.getBoundingClientRect();
+                const centerX = rect.left + rect.width / 2;
+                const centerY = rect.top + rect.height / 2;
+                const deltaX = e.clientX - centerX;
+                const deltaY = e.clientY - centerY;
+                const angle = Math.atan2(deltaY, deltaX);
+                volume = Math.min(Math.max((angle + Math.PI) / (2 * Math.PI), 0), 1);
+                audio.volume = volume;
+                setKnobRotation(volume);
+                volumeLabel.textContent = `${Math.round(volume * 100)}%`;
+            }
+            document.addEventListener('mousemove', onMouseMove);
+            document.addEventListener('mouseup', function() {
+                document.removeEventListener('mousemove', onMouseMove);
+            }, { once: true });
+        });
     </script>
 </body>
 </html>
