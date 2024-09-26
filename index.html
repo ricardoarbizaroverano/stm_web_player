@@ -13,7 +13,7 @@
             font-family: 'Staatliches', sans-serif;
             text-align: center;
             padding: 20px;
-            background-image: url('https://ambitointernacional.com/wp-content/uploads/2022/10/uru4-1024x644.jpg');
+            background-image: url('background_anglo.jpg');
             background-size: cover;
             background-attachment: fixed;
             background-color: #000000;
@@ -38,6 +38,7 @@
             font-family: 'Staatliches', sans-serif;
             font-size: 1.5em;
             color: #ffffff;
+            text-shadow: 1px 1px 2px #000000;
             margin-top: 10px;
         }
         .credits {
@@ -102,8 +103,16 @@
         .volume-control {
             margin-top: 20px;
             display: flex;
+            flex-direction: column; /* Cambiado a columna para que la leyenda esté encima del slider */
             justify-content: center;
             align-items: center;
+        }
+        .volume-legend {
+            font-family: 'Staatliches', sans-serif;
+            font-size: 1.2em;
+            color: #000000;
+            margin-bottom: 10px; /* Espacio entre la leyenda y el slider */
+            text-shadow: 1px 1px 3px #ffffff;
         }
         .volume-slider {
             -webkit-appearance: none;
@@ -144,7 +153,7 @@
             width: 100%;
             text-align: center;
             font-family: 'VT323', monospace;
-            font-size: 1.5em;
+            font-size: 1.2em;
             color: #ffffff;
             text-shadow: 1px 1px 2px #000000;
         }
@@ -162,6 +171,7 @@
     <div class="player-container">
         <div class="play-button" id="play-button"></div>
         <div class="volume-control">
+            <div class="volume-legend">Volumen</div> <!-- Leyenda para el volumen -->
             <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="0.5">
         </div>
         <audio id="audio-player" loop controls style="display: none;">
@@ -172,11 +182,13 @@
 
     <div class="credits">
         Gracias por visitarnos!<br>
-        Museo de la Revolución Industrial, Fray Bentos, Rio Negro, Uruguay
+        Museo de la Revolución Industrial <br>
+        Fray Bentos, Rio Negro, Uruguay
     </div>
 
     <div class="footer">
-        Diseño, Creación e Idea: &copy; Ricardo Arbiza, 2024 | <a href="https://ricardoarbiza.com">ricardoarbiza.com</a>
+        Diseño, Creación e Idea: <br>
+         &copy; Ricardo Arbiza, 2024 | <a href="https://ricardoarbiza.com">ricardoarbiza.com</a>
     </div>
 
     <script>
